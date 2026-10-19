@@ -45,7 +45,7 @@ MIT License – Ou ka itilize, modifye, distribye, e menm vann aplikasyon ki iti
 ```
 MIT License
 
-Copyright (c) 2026 Group Mackandal
+Copyright (c) 2026 RebrandAyiti
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -78,7 +78,7 @@ Nou envite tout **devlopè, designer, fotogwaf, blogger, aktivis ak volontè Ayi
 4. Voye PR: `git push origin feat/misyon-ou`
 5. Nou ap revize l, epi mete w kòm kontribitè!
 
-📩 Kontakte: rebrandayiti@groupmackandal.org  
+📩 Kontakte: [GitHub Issues](https://github.com/FalandyJEAN/RebrandAyiti/issues)  
 📢 Diskisyon: [Discord RebrandAyiti (byen vit!)](https://discord.gg/rebrandayiti)
 
 ---
@@ -122,7 +122,7 @@ Nou akeyi kontribitè nouvo ak eksperimante. Ou ka ede pa:
 
 ---
 
-## ✨ Pwojè pa: [Group Mackandal](https://groupmackandal.org)
+## ✨ RebrandAyiti
 
 **"Nou pap efase reyalite — men n ap mete limyè sou bèlte nou yo."**
 

@@ -96,7 +96,6 @@ export default function NavBar() {
                 <span className="text-lg font-extrabold tracking-tight text-gray-900 dark:text-white">
                   RebrandAyiti
                 </span>
-                <span className="badge-mackandal text-[9px] leading-none">Group Mackandal</span>
               </div>
             </Link>
 

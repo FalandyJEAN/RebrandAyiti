@@ -166,7 +166,7 @@ scripts/
 
 ---
 
-**Contact :** rebrandayiti@groupmackandal.org
-**GitHub :** https://github.com/FalandyJEAN/Group-Mackandal-RebrandAyiti
+**Contact :** [GitHub Issues](https://github.com/FalandyJEAN/RebrandAyiti/issues)
+**GitHub :** https://github.com/FalandyJEAN/RebrandAyiti
 
-*Fait pour Haïti, par Group Mackandal.*
+*Fait pour Haïti, par la communauté RebrandAyiti.*

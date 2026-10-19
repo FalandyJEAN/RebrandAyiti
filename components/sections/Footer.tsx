@@ -19,7 +19,7 @@ export default function Footer({ data }: FooterProps) {
             <div className="flex flex-col mb-6">
               <span className="text-2xl md:text-3xl font-black tracking-tight">RebrandAyiti</span>
               <span className="text-xs font-bold tracking-[0.25em] uppercase mt-1" style={{ color: '#D21034' }}>
-                Group Mackandal
+                Mouvman Ayisyen
               </span>
             </div>
             <p className="text-gray-400 leading-relaxed max-w-sm">

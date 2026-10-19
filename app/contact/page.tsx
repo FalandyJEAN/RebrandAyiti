@@ -32,7 +32,7 @@ export default function ContactPage() {
         {/* En-tête */}
         <div className="mb-12 md:mb-16">
           <p className="text-xs font-bold tracking-[0.25em] uppercase text-gray-400 dark:text-gray-500 mb-4">
-            Group Mackandal
+            Mouvman Ayisyen
           </p>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 dark:text-white leading-none">
             Kontakte nou.
@@ -66,7 +66,7 @@ export default function ContactPage() {
               <div className="px-5 py-5 border-b border-gray-200 dark:border-gray-800">
                 <p className="text-xs font-bold tracking-widest uppercase text-gray-400 dark:text-gray-600 mb-1">GitHub</p>
                 <span className="font-semibold text-gray-900 dark:text-white text-sm">
-                  github.com/FalandyJEAN/Group-Mackandal-RebrandAyiti
+                  github.com/FalandyJEAN/RebrandAyiti
                 </span>
               </div>
               <div className="px-5 py-5">

@@ -52,7 +52,7 @@ export default function HeroSection({ data, onGetStarted }: HeroSectionProps) {
 
           {/* Label mouvement */}
           <p className="text-xs font-bold tracking-[0.3em] uppercase text-white/60 mb-6">
-            Group Mackandal — Mouvman RebrandAyiti
+            Mouvman RebrandAyiti
           </p>
 
           {/* Titre massif */}

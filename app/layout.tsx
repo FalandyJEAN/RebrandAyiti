@@ -9,19 +9,19 @@ import NavBar from "@/components/NavBar"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "RebrandAyiti — Group Mackandal",
+  title: "RebrandAyiti",
   description:
     "Plateforme kominotè pou chanje reprezantasyon vizyèl Ayiti sou Entènèt. Nou itilize IA, SEO ak travay kolektif pou ranplase imaj negatif ak bèl imaj ki montre richès peyi a. Rejoignez le mouvement !",
   keywords: [
-    "Haïti", "Haiti", "RebrandAyiti", "Group Mackandal",
+    "Haïti", "Haiti", "RebrandAyiti",
     "culture haïtienne", "beauté Haïti", "photographie Haïti",
     "Citadelle Laferrière", "Labadee", "art haïtien",
     "open-source", "communauté", "patrimoine", "SEO Haiti",
     "imaj Ayiti", "reprezantasyon pozitif",
   ],
-  authors: [{ name: "Group Mackandal" }],
+  authors: [{ name: "RebrandAyiti" }],
   openGraph: {
-    title: "RebrandAyiti — Group Mackandal",
+    title: "RebrandAyiti",
     description:
       "Chanje reprezantasyon vizyèl Ayiti sou Google. Bank imaj pozitif, IA crawler, kominote kontribitè.",
     type: "website",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "RebrandAyiti — Group Mackandal",
+    title: "RebrandAyiti",
     description:
       "Chanje reprezantasyon vizyèl Ayiti sou Google. Bank imaj pozitif, IA crawler, kominote kontribitè.",
     site: "@rebrandayiti",

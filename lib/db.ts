@@ -1,6 +1,10 @@
 import { neon } from "@neondatabase/serverless"
 
-export const sql = neon(process.env.DATABASE_URL!)
+let _sql: ReturnType<typeof neon<false, false>> | null = null
+
+// Connexion paresseuse : le build ne plante pas si DATABASE_URL est absent
+export const sql = ((strings: TemplateStringsArray, ...values: unknown[]) =>
+  (_sql ??= neon(process.env.DATABASE_URL!))(strings, ...values)) as ReturnType<typeof neon<false, false>>
 
 export async function initDB() {
   await sql`

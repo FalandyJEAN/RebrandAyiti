@@ -48,7 +48,7 @@ Nou kontan w ap panse kontribye! RebrandAyiti se yon mouvman pou Ayiti, pa Ayisy
 
 ## 📬 Kontakte ekip la
 Si ou bezwen èd oswa gen kesyon:
-- Email: **rebrandayiti@groupmackandal.org**
+- Email: **[GitHub Issues](https://github.com/FalandyJEAN/RebrandAyiti/issues)**
 - Discord: [https://discord.gg/rebrandayiti](https://discord.gg/rebrandayiti)
 
 ---

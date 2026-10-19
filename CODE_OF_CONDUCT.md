@@ -17,7 +17,7 @@ Nou angaje nou pou:
 
 ## 📣 Rapò Konpòtman
 Si ou temwen oswa sibi konpòtman ki pa respekte kòd sa a:
-- Tanpri kontakte ekip la imedyatman pa imel: **rebrandayiti@groupmackandal.org**
+- Tanpri kontakte ekip la imedyatman pa imel: **[GitHub Issues](https://github.com/FalandyJEAN/RebrandAyiti/issues)**
 - Tout rapò yo ap trete ak konfidansyalite ak gravite
 
 ## 👨🏿‍⚖️ Konsekans

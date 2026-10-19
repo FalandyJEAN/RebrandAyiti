@@ -106,7 +106,7 @@ body {
            hover:shadow-lg hover:-translate-y-0.5;
   }
 
-  .badge-mackandal {
+  .badge-brand {
     @apply text-xs font-bold tracking-widest uppercase
            bg-gradient-to-r from-[#003F87] to-[#D21034]
            bg-clip-text text-transparent;

@@ -134,7 +134,7 @@ export default function CommunitySection() {
                 &ldquo;Ayiti pa sèlman tranblemantè ak povrete. Se art, se mizik, se rezistans,
                 se bèlte ki pa janm fini.&rdquo;
               </p>
-              <p className="text-gray-500 text-sm">— Misyon Group Mackandal</p>
+              <p className="text-gray-500 text-sm">— Misyon RebrandAyiti</p>
             </div>
           </div>
 

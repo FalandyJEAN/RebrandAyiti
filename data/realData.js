@@ -65,11 +65,11 @@ export const realData = {
       { label: "Kontakte", href: "/contact" },
     ],
     socialLinks: [
-      { platform: "GitHub", href: "https://github.com/FalandyJEAN/Group-Mackandal-RebrandAyiti" },
+      { platform: "GitHub", href: "https://github.com/FalandyJEAN/RebrandAyiti" },
       { platform: "Twitter", href: "https://twitter.com/rebrandayiti" },
       { platform: "LinkedIn", href: "https://linkedin.com/company/rebrandayiti" },
-      { platform: "Email", href: "mailto:rebrandayiti@groupmackandal.org" },
+      { platform: "Email", href: "https://github.com/FalandyJEAN/RebrandAyiti/issues" },
     ],
-    copyright: "© {year} Group Mackandal — RebrandAyiti. MIT License. Fèt ak ❤️ pou Ayiti.",
+    copyright: "© {year} RebrandAyiti. MIT License. Fèt ak ❤️ pou Ayiti.",
   },
 }

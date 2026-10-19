@@ -65,7 +65,7 @@ export default function AboutPage() {
         <div className="py-14 md:py-24 grid lg:grid-cols-2 gap-10 items-center">
           <div>
             <p className="text-xs font-bold tracking-[0.25em] uppercase text-gray-400 dark:text-gray-500 mb-4">
-              Group Mackandal
+              Mouvman Ayisyen
             </p>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 dark:text-white leading-none mb-6">
               Misyon nou.
@@ -115,7 +115,7 @@ export default function AboutPage() {
                 &ldquo;Ayiti pa sèlman tranblemantè ak povrete. Se art, se mizik,
                 se rezistans, se bèlte ki pa janm fini.&rdquo;
               </p>
-              <p className="text-gray-500 text-sm">— Misyon Group Mackandal</p>
+              <p className="text-gray-500 text-sm">— Misyon RebrandAyiti</p>
             </div>
           </div>
         </div>

@@ -58,7 +58,7 @@ export default function CTASection({ data }: CTASectionProps) {
           <span className="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse" />
           Open-source — MIT License —&nbsp;
           <a
-            href="https://github.com/FalandyJEAN/Group-Mackandal-RebrandAyiti"
+            href="https://github.com/FalandyJEAN/RebrandAyiti"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-gray-900 dark:hover:text-white transition-colors"

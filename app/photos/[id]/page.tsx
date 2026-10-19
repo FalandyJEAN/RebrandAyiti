@@ -88,7 +88,7 @@ export default async function PhotoPage({ params }: Props) {
             locationCreated: { "@type": "Place", name: photo.location, addressCountry: "HT" },
             keywords: (photo.tags || []).join(", "),
             datePublished: photo.created_at,
-            publisher: { "@type": "Organization", name: "RebrandAyiti — Group Mackandal" },
+            publisher: { "@type": "Organization", name: "RebrandAyiti" },
           }),
         }}
       />
@@ -124,7 +124,7 @@ export default async function PhotoPage({ params }: Props) {
 
           <div className="p-6 md:p-8">
             <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 dark:text-gray-600 mb-3">
-              RebrandAyiti — Group Mackandal
+              RebrandAyiti
             </p>
             <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white mb-5">
               {photo.title}
