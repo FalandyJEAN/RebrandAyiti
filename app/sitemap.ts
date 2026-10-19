@@ -2,6 +2,9 @@ import { type MetadataRoute } from "next"
 import { sql } from "@/lib/db"
 import { SITE_URL as baseUrl, absoluteUrl } from "@/lib/site"
 
+// Régénéré toutes les heures : les nouvelles photos du catalogue y entrent sans redéploiement
+export const revalidate = 3600
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
