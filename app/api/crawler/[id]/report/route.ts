@@ -42,27 +42,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         report_count = report_count + 1,
         status = CASE WHEN report_count + 1 >= 10 THEN 'reported' ELSE status END
       WHERE id = ${imageId}
-      RETURNING report_count, image_url, search_query
+      RETURNING report_count
     `
 
     const image = result[0]
 
-    // Generate Google report URL for this image
-    const googleReportUrl = generateGoogleReportUrl(image.image_url, image.search_query)
-
-    return NextResponse.json({
-      success: true,
-      report_count: image.report_count,
-      google_report_url: googleReportUrl,
-    })
+    return NextResponse.json({ success: true, report_count: image.report_count })
   } catch (error) {
     console.error("Report error:", error)
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 })
   }
-}
-
-function generateGoogleReportUrl(imageUrl: string, searchQuery: string): string {
-  // Opens Google Images search for the query — user can then report directly
-  const googleImagesUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(searchQuery + " site:" + new URL(imageUrl).hostname)}`
-  return googleImagesUrl
 }

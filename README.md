@@ -129,6 +129,8 @@ npm install --legacy-peer-deps
 npm run dev        # http://localhost:3000
 ```
 
+Kolektè a li flux RSS 10 jounal (Le Nouvelliste, HaïtiLibre, Juno7, Le Monde, The Guardian…) chak jou, san okenn API. Lis la nan `lib/news-sources.ts`.
+
 Pa bezwen okenn konfigirasyon : baz done a (PGlite) ak foto yo estoke nan `.data/`.
 Pou pwodiksyon, gade `.env.example` (`JWT_SECRET` obligatwa, `DATABASE_URL` Neon, `BLOB_READ_WRITE_TOKEN`).
 

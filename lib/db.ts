@@ -110,6 +110,22 @@ export async function initDB() {
       reported_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
     )
   `
+  // Colonnes du collecteur de presse (ajoutées sans casser une base existante)
+  await raw`ALTER TABLE negative_images ADD COLUMN IF NOT EXISTS source_id TEXT DEFAULT ''`
+  await raw`ALTER TABLE negative_images ADD COLUMN IF NOT EXISTS source_name TEXT DEFAULT ''`
+  await raw`ALTER TABLE negative_images ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITH TIME ZONE`
+  await raw`ALTER TABLE negative_images ADD COLUMN IF NOT EXISTS media_contacts INTEGER DEFAULT 0`
+  await raw`ALTER TABLE negative_images ADD COLUMN IF NOT EXISTS google_reports INTEGER DEFAULT 0`
+  await raw`
+    CREATE TABLE IF NOT EXISTS image_actions (
+      image_id INTEGER NOT NULL REFERENCES negative_images(id) ON DELETE CASCADE,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      action TEXT NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      PRIMARY KEY (image_id, user_id, action)
+    )
+  `
+  await raw`CREATE INDEX IF NOT EXISTS negative_images_page_url_idx ON negative_images (page_url)`
   const [{ count }] = await raw`SELECT COUNT(*)::int AS count FROM photos`
   if (count === 0) {
     for (const [title, location, category, subcategory, tags, url] of SEED_PHOTOS) {

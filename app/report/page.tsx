@@ -7,7 +7,11 @@ import {
   X, RefreshCw, Brain, TrendingUp
 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
-import { openAuthModal } from "@/lib/modal-events"
+import { openAuthModal, openUploadModal } from "@/lib/modal-events"
+import { NEWS_SOURCES } from "@/lib/news-sources"
+
+// Formulaire officiel de Google pour signaler un contenu dans la recherche
+const GOOGLE_REPORT_URL = "https://support.google.com/legal/answer/3110420"
 
 interface NegativeImage {
   id: number
@@ -20,6 +24,11 @@ interface NegativeImage {
   report_count: number
   status: "pending" | "reported" | "resolved"
   found_at: string
+  source_id?: string
+  source_name?: string
+  published_at?: string | null
+  media_contacts?: number
+  google_reports?: number
 }
 
 interface Stats {
@@ -55,7 +64,7 @@ export default function ReportPage() {
   const loadData = useCallback(async () => {
     setIsLoading(true)
     try {
-      const res = await fetch("/api/crawler/results?limit=20")
+      const res = await fetch("/api/crawler/results?limit=60")
       const data = await res.json()
       setImages(data.images || [])
       setStats(data.stats || null)
@@ -87,12 +96,24 @@ export default function ReportPage() {
             img.id === imageId ? { ...img, report_count: data.report_count } : img
           )
         )
-        if (data.google_report_url) window.open(data.google_report_url, "_blank")
       }
     } finally {
       setReporting(null)
       setSelectedImages(new Set())
       setReportReason("")
+    }
+  }
+
+  const handleAction = async (image: NegativeImage, action: "media" | "google") => {
+    if (!token) { openAuthModal(); return }
+    const res = await fetch(`/api/crawler/${image.id}/action`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ action }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setImages((prev) => prev.map((img) => (img.id === image.id ? { ...img, ...data } : img)))
     }
   }
 
@@ -112,9 +133,7 @@ export default function ReportPage() {
       if (res.status === 401) { openAuthModal(); return }
       const data = await res.json()
       setCrawlerResult(
-        data.configured === false
-          ? "Scan otomatik la pa konfigire (GOOGLE_CSE_ID). Ou ka toujou soumèt yon imaj anba a."
-          : `Scan fini: ${data.scanned} imaj eskane, ${data.stored} nouvo imaj negatif jwenn (rechèch: "${data.query}")`
+        `Scan fini: ${data.scanned} atik li nan ${data.sources?.length ?? 0} jounal, ${data.stored} nouvo imaj negatif jwenn.`
       )
       await loadData()
     } catch {
@@ -335,7 +354,7 @@ export default function ReportPage() {
               className="btn-haiti px-6 py-3 font-bold text-sm disabled:opacity-60"
             >
               <Brain className="w-4 h-4 inline mr-2" />
-              Lanse premye scan la
+              Li jounal yo kounye a
             </button>
           </div>
         ) : (
@@ -362,6 +381,7 @@ export default function ReportPage() {
                     src={image.image_url || "/images/haiti-hero.jpg"}
                     alt={image.title || "Imaj negatif detekte"}
                     fill
+                    referrerPolicy="no-referrer"
                     className="object-cover"
                     onError={(e) => {
                       const t = e.target as HTMLImageElement
@@ -401,7 +421,11 @@ export default function ReportPage() {
                     {image.title || "San tit"}
                   </p>
                   <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                    Rechèch: <span className="font-medium" style={{ color: "#D21034" }}>&ldquo;{image.search_query}&rdquo;</span>
+                    <span className="font-semibold" style={{ color: "#D21034" }}>{image.source_name || image.search_query}</span>
+                    {(image.published_at || image.found_at) && (
+                      <> · {new Date(image.published_at || image.found_at).toLocaleDateString("fr-FR")}</>
+                    )}
+                    {image.ai_labels?.labels?.length > 0 && <> · {image.ai_labels.labels.join(", ")}</>}
                   </div>
                   <div className={`inline-block px-2 py-0.5 text-xs font-semibold mb-3 ${
                     image.status === "resolved"
@@ -453,6 +477,37 @@ export default function ReportPage() {
                         </button>
                       )}
                     </div>
+                  </div>
+
+                  {/* Aksyon konkrè */}
+                  <div className="grid grid-cols-3 gap-1 mt-3 text-[11px] font-semibold">
+                    <a
+                      href={NEWS_SOURCES.find((s) => s.id === image.source_id)?.contactUrl || image.page_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleAction(image, "media")}
+                      className="border border-gray-200 dark:border-gray-800 px-2 py-1.5 text-center text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
+                      title="Mande jounal la chanje foto a oswa lejand lan"
+                    >
+                      Ekri jounal la ({image.media_contacts ?? 0})
+                    </a>
+                    <a
+                      href={GOOGLE_REPORT_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleAction(image, "google")}
+                      className="border border-gray-200 dark:border-gray-800 px-2 py-1.5 text-center text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
+                      title="Fòmilè ofisyèl Google pou siyale yon kontni"
+                    >
+                      Siyale Google ({image.google_reports ?? 0})
+                    </a>
+                    <button
+                      onClick={() => (token ? openUploadModal() : openAuthModal())}
+                      className="border border-gray-200 dark:border-gray-800 px-2 py-1.5 text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
+                      title="Ajoute yon foto pozitif sou menm sijè a"
+                    >
+                      Kontre l ak bèl foto
+                    </button>
                   </div>
                 </div>
               </div>
