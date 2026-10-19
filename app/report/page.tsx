@@ -9,9 +9,13 @@ import {
 import { useAuth } from "@/lib/auth-context"
 import { openAuthModal, openUploadModal } from "@/lib/modal-events"
 import { NEWS_SOURCES } from "@/lib/news-sources"
+import { SITE_URL } from "@/lib/site"
+import Campaign from "@/components/report/Campaign"
+import ImpactSimulator from "@/components/report/ImpactSimulator"
 
-// Formulaire officiel de Google pour signaler un contenu dans la recherche
-const GOOGLE_REPORT_URL = "https://support.google.com/legal/answer/3110420"
+// Google Images, recherche "Haiti" + titre : l'utilisateur signale l'image via ⋮ → « Send feedback »
+const googleImagesUrl = (title: string) =>
+  `https://www.google.com/search?tbm=isch&q=${encodeURIComponent("Haiti " + title.slice(0, 60))}`
 
 interface NegativeImage {
   id: number
@@ -104,7 +108,7 @@ export default function ReportPage() {
     }
   }
 
-  const handleAction = async (image: NegativeImage, action: "media" | "google") => {
+  const handleAction = async (image: { id: number }, action: "media" | "google") => {
     if (!token) { openAuthModal(); return }
     const res = await fetch(`/api/crawler/${image.id}/action`, {
       method: "POST",
@@ -223,7 +227,7 @@ export default function ReportPage() {
             {isRunningCrawler ? (
               <><RefreshCw className="w-4 h-4 animate-spin" /> Scan ap mache...</>
             ) : (
-              <><Brain className="w-4 h-4" /> Lanse scan IA</>
+              <><Brain className="w-4 h-4" /> Li jounal yo</>
             )}
           </button>
         </div>
@@ -248,26 +252,26 @@ export default function ReportPage() {
         {/* Kijan li mache */}
         <div className="border border-gray-200 dark:border-gray-800 p-5 md:p-8 mb-10">
           <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 dark:text-gray-600 mb-6">
-            Kijan IA nou an travay
+            Kijan sa mache
           </p>
           <div className="grid md:grid-cols-3 gap-6 md:gap-10">
             {[
               {
                 num: "01",
-                title: "Scan Google Imaj",
-                body: "Nou chèche «Haiti poverty», «Haiti earthquake»... — rechèch ki pi danjere yo",
+                title: "Nou li jounal yo",
+                body: "Chak jou, nou li flux RSS 10 jounal ayisyen ak entènasyonal epi nou pran foto chak atik — san okenn API",
                 color: "#003F87",
               },
               {
                 num: "02",
-                title: "Klasifikasyon IA",
-                body: "Chak imaj analize (skor 0→1) pa HuggingFace BART pou mezire toksisité li",
+                title: "Nou triye yo",
+                body: "Tit ak rezime atik la analize lokalman (mo kle fransè, angle, kreyòl) pou bay yon skò 0→1",
                 color: "#003F87",
               },
               {
                 num: "03",
                 title: "Sinyalman kominotè",
-                body: "Kominote a konfime epi sinyale Google — algoritm la fini pa retire yo",
+                body: "Nou tout konsantre sou 5 imaj : mesaj bay jounal la, siyalman Google, ak bèl foto « Haiti » pou ranplase yo",
                 color: "#D21034",
               },
             ].map((step) => (
@@ -335,6 +339,13 @@ export default function ReportPage() {
         )}
 
         {/* Grille */}
+        {!isLoading && images.length > 0 && (
+          <>
+            <Campaign images={images} siteUrl={SITE_URL} onAction={handleAction} />
+            <ImpactSimulator imagesCount={images.length} />
+          </>
+        )}
+
         {isLoading ? (
           <div className="text-center py-20">
             <RefreshCw className="w-6 h-6 animate-spin text-gray-400 mx-auto mb-3" />
@@ -492,12 +503,12 @@ export default function ReportPage() {
                       Ekri jounal la ({image.media_contacts ?? 0})
                     </a>
                     <a
-                      href={GOOGLE_REPORT_URL}
+                      href={googleImagesUrl(image.title)}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => handleAction(image, "google")}
                       className="border border-gray-200 dark:border-gray-800 px-2 py-1.5 text-center text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
-                      title="Fòmilè ofisyèl Google pou siyale yon kontni"
+                      title="Jwenn imaj la sou Google Images, epi ⋮ → Send feedback"
                     >
                       Siyale Google ({image.google_reports ?? 0})
                     </a>

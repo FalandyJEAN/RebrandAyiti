@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import { embedCode, photoAlt, photoJsonLd, safeJson, type EmbeddablePhoto } from "@/lib/site"
+import EmbedBox from "@/components/EmbedBox"
 import { notFound } from "next/navigation"
 import { sql } from "@/lib/db"
 import { MapPin, Calendar, User, ArrowLeft, Tag } from "lucide-react"
@@ -17,7 +19,7 @@ async function getPhoto(id: string) {
       LEFT JOIN users u ON p.author_id = u.id
       WHERE p.id = ${parseInt(id)}
     `
-    return result[0] || null
+    return (result[0] as (EmbeddablePhoto & { created_at: string; tags: string[]; category: string }) | undefined) || null
   } catch {
     return null
   }
@@ -78,18 +80,7 @@ export default async function PhotoPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ImageObject",
-            name: photo.title,
-            description: photo.description || `Foto otantik Ayiti pran nan ${photo.location}`,
-            contentUrl: photo.url,
-            author: { "@type": "Person", name: photo.author_name },
-            locationCreated: { "@type": "Place", name: photo.location, addressCountry: "HT" },
-            keywords: (photo.tags || []).join(", "),
-            datePublished: photo.created_at,
-            publisher: { "@type": "Organization", name: "RebrandAyiti" },
-          }),
+          __html: safeJson(photoJsonLd(photo)),
         }}
       />
 
@@ -115,7 +106,7 @@ export default async function PhotoPage({ params }: Props) {
           <div className="relative w-full" style={{ paddingBottom: "60%" }}>
             <Image
               src={photo.url}
-              alt={`${photo.title} — Foto Ayiti, ${photo.location}`}
+              alt={photoAlt(photo)}
               fill
               className="object-cover"
               priority
@@ -167,6 +158,20 @@ export default async function PhotoPage({ params }: Props) {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Pataje sou yon blog */}
+        <div className="border border-gray-200 dark:border-gray-800 p-6 md:p-8 mb-8">
+          <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 dark:text-gray-600 mb-1">
+            Pataje foto sa a
+          </p>
+          <p className="text-lg font-black text-gray-900 dark:text-white mb-3">
+            Kole kòd sa a nan blog ou (lisans CC BY 4.0, kredi otomatik).
+          </p>
+          <EmbedBox code={embedCode(photo)} />
+          <Link href="/pataje" className="inline-block mt-3 text-sm font-semibold underline text-gray-700 dark:text-gray-300">
+            Gid konplè : kijan pou pataje san sal imaj Ayiti
+          </Link>
         </div>
 
         {/* CTA éditorial */}

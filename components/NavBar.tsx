@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Camera, Flag, Home, Users, LogOut, User, Sun, Moon, Plus } from "lucide-react"
+import { Camera, Flag, Home, LogOut, User, Sun, Moon, Plus, Share2 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
@@ -72,9 +72,9 @@ export default function NavBar() {
             <Flag className="w-5 h-5" />
             <span>Sinyale</span>
           </Link>
-          <Link href="/community" className={mobileNavLink("/community", "text-[#003F87] dark:text-white")}>
-            <Users className="w-5 h-5" />
-            <span>Kominote</span>
+          <Link href="/pataje" className={mobileNavLink("/pataje", "text-[#003F87] dark:text-white")}>
+            <Share2 className="w-5 h-5" />
+            <span>Gid blog</span>
           </Link>
         </div>
       </nav>
@@ -105,6 +105,7 @@ export default function NavBar() {
               <Link href="/report" className={navLink("/report", "text-[#D21034] dark:text-[#ff6b7a] font-bold")}>
                 Sinyale
               </Link>
+              <Link href="/pataje" className={navLink("/pataje")}>Gid blog</Link>
               <Link href="/community" className={navLink("/community")}>Kominote</Link>
 
               {/* Bascule dark mode */}

@@ -53,10 +53,10 @@ export default function ContactPage() {
               <div className="px-5 py-5 border-b border-gray-200 dark:border-gray-800">
                 <p className="text-xs font-bold tracking-widest uppercase text-gray-400 dark:text-gray-600 mb-1">Email</p>
                 <a
-                  href="mailto:hello@rebrandayiti.org"
+                  href="https://github.com/FalandyJEAN/RebrandAyiti/issues"
                   className="font-semibold text-gray-900 dark:text-white hover:underline"
                 >
-                  hello@rebrandayiti.org
+                  GitHub Issues
                 </a>
               </div>
               <div className="px-5 py-5 border-b border-gray-200 dark:border-gray-800">

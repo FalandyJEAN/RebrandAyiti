@@ -5,10 +5,12 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/auth-context"
 import NavBar from "@/components/NavBar"
+import { SITE_URL } from "@/lib/site"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "RebrandAyiti",
   description:
     "Plateforme kominotè pou chanje reprezantasyon vizyèl Ayiti sou Entènèt. Nou itilize IA, SEO ak travay kolektif pou ranplase imaj negatif ak bèl imaj ki montre richès peyi a. Rejoignez le mouvement !",

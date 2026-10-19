@@ -33,3 +33,6 @@ next-env.d.ts
 .claude/
 # données locales du prototype
 /.data/
+
+.vercel
+.env*
