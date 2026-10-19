@@ -125,6 +125,26 @@ export async function initDB() {
       PRIMARY KEY (image_id, user_id, action)
     )
   `
+  await raw`
+    CREATE TABLE IF NOT EXISTS catalog_images (
+      id SERIAL PRIMARY KEY,
+      kind TEXT NOT NULL DEFAULT 'free',
+      source TEXT NOT NULL,
+      page_url TEXT NOT NULL,
+      image_url TEXT NOT NULL UNIQUE,
+      thumb_url TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      category TEXT NOT NULL,
+      credit TEXT DEFAULT '',
+      license TEXT DEFAULT '',
+      license_url TEXT DEFAULT '',
+      width INTEGER,
+      height INTEGER,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    )
+  `
+  await raw`CREATE INDEX IF NOT EXISTS catalog_images_category_idx ON catalog_images (category)`
   await raw`CREATE INDEX IF NOT EXISTS negative_images_page_url_idx ON negative_images (page_url)`
   const [{ count }] = await raw`SELECT COUNT(*)::int AS count FROM photos`
   if (count === 0) {

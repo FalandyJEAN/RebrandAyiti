@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server"
 import { collectAll } from "@/lib/collector"
+import { collectBeauty } from "@/lib/beauty-collector"
 import { verifyToken, getTokenFromRequest } from "@/lib/jwt"
 
 export const maxDuration = 300
 
-// GET /api/crawler — lit les flux RSS des journaux et stocke les images d'articles stigmatisants.
+// GET /api/crawler — lit les journaux (images stigmatisantes) et remplit le catalogue de belles images.
 // Déclenché chaque jour par Vercel Cron, ou à la main par un membre connecté.
 export async function GET(req: Request) {
   const authHeader = req.headers.get("authorization")
@@ -16,8 +17,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 })
   }
 
-  const sources = await collectAll()
+  const [sources, beauty] = await Promise.all([collectAll(), collectBeauty()])
   return NextResponse.json({
+    beauty,
     sources,
     scanned: sources.reduce((n, s) => n + s.items, 0),
     stored: sources.reduce((n, s) => n + s.stored, 0),

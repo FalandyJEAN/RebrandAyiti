@@ -53,9 +53,9 @@ export default function NavBar() {
             <Home className="w-5 h-5" />
             <span>Akèy</span>
           </Link>
-          <Link href="/gallery" className={mobileNavLink("/gallery")}>
+          <Link href="/katalog" className={mobileNavLink("/katalog")}>
             <Camera className="w-5 h-5" />
-            <span>Galri</span>
+            <span>Katalòg</span>
           </Link>
           <button
             onClick={() => user ? setShowUploadModal(true) : setShowAuthModal(true)}
@@ -102,6 +102,7 @@ export default function NavBar() {
             <div className="flex items-center gap-6">
               <Link href="/" className={navLink("/")}>Akèy</Link>
               <Link href="/gallery" className={navLink("/gallery")}>Galri</Link>
+              <Link href="/katalog" className={navLink("/katalog")}>Katalòg</Link>
               <Link href="/report" className={navLink("/report", "text-[#D21034] dark:text-[#ff6b7a] font-bold")}>
                 Sinyale
               </Link>

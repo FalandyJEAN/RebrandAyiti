@@ -7,15 +7,10 @@ import {
   X, RefreshCw, Brain, TrendingUp
 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
-import { openAuthModal, openUploadModal } from "@/lib/modal-events"
-import { NEWS_SOURCES } from "@/lib/news-sources"
-import { SITE_URL } from "@/lib/site"
+import { openAuthModal } from "@/lib/modal-events"
+import { oneClickReport } from "@/lib/one-click-report"
 import Campaign from "@/components/report/Campaign"
 import ImpactSimulator from "@/components/report/ImpactSimulator"
-
-// Google Images, recherche "Haiti" + titre : l'utilisateur signale l'image via ⋮ → « Send feedback »
-const googleImagesUrl = (title: string) =>
-  `https://www.google.com/search?tbm=isch&q=${encodeURIComponent("Haiti " + title.slice(0, 60))}`
 
 interface NegativeImage {
   id: number
@@ -105,19 +100,6 @@ export default function ReportPage() {
       setReporting(null)
       setSelectedImages(new Set())
       setReportReason("")
-    }
-  }
-
-  const handleAction = async (image: { id: number }, action: "media" | "google") => {
-    if (!token) { openAuthModal(); return }
-    const res = await fetch(`/api/crawler/${image.id}/action`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ action }),
-    })
-    if (res.ok) {
-      const data = await res.json()
-      setImages((prev) => prev.map((img) => (img.id === image.id ? { ...img, ...data } : img)))
     }
   }
 
@@ -341,7 +323,7 @@ export default function ReportPage() {
         {/* Grille */}
         {!isLoading && images.length > 0 && (
           <>
-            <Campaign images={images} siteUrl={SITE_URL} onAction={handleAction} />
+            <Campaign images={images} token={token} />
             <ImpactSimulator imagesCount={images.length} />
           </>
         )}
@@ -472,8 +454,10 @@ export default function ReportPage() {
                       ) : (
                         <button
                           onClick={() => {
-                            if (!token) { openAuthModal(); return }
-                            handleReport(image.id, "Esteyreotip negatif")
+                            // Un clic : message pré-rempli ouvert pour le média, signalement enregistré
+                            oneClickReport(image, token)
+                            setReportedIds((prev) => new Set([...prev, image.id]))
+                            setImages((prev) => prev.map((img) => (img.id === image.id ? { ...img, report_count: img.report_count + 1 } : img)))
                           }}
                           disabled={reporting === image.id}
                           className="flex items-center gap-1 px-3 py-1.5 text-white text-xs font-bold disabled:opacity-50"
@@ -490,36 +474,6 @@ export default function ReportPage() {
                     </div>
                   </div>
 
-                  {/* Aksyon konkrè */}
-                  <div className="grid grid-cols-3 gap-1 mt-3 text-[11px] font-semibold">
-                    <a
-                      href={NEWS_SOURCES.find((s) => s.id === image.source_id)?.contactUrl || image.page_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => handleAction(image, "media")}
-                      className="border border-gray-200 dark:border-gray-800 px-2 py-1.5 text-center text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
-                      title="Mande jounal la chanje foto a oswa lejand lan"
-                    >
-                      Ekri jounal la ({image.media_contacts ?? 0})
-                    </a>
-                    <a
-                      href={googleImagesUrl(image.title)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => handleAction(image, "google")}
-                      className="border border-gray-200 dark:border-gray-800 px-2 py-1.5 text-center text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
-                      title="Jwenn imaj la sou Google Images, epi ⋮ → Send feedback"
-                    >
-                      Siyale Google ({image.google_reports ?? 0})
-                    </a>
-                    <button
-                      onClick={() => (token ? openUploadModal() : openAuthModal())}
-                      className="border border-gray-200 dark:border-gray-800 px-2 py-1.5 text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-white"
-                      title="Ajoute yon foto pozitif sou menm sijè a"
-                    >
-                      Kontre l ak bèl foto
-                    </button>
-                  </div>
                 </div>
               </div>
             ))}
