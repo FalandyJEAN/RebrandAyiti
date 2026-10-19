@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { sql } from "@/lib/db"
 import { classifyImage } from "@/lib/classifier"
 import { getGoogleAccessToken } from "@/lib/google-auth"
+import { verifyToken, getTokenFromRequest } from "@/lib/jwt"
 
 // Queries to search — exactly what people type on Google to find negative Haiti images
 const NEGATIVE_QUERIES = [
@@ -72,9 +73,11 @@ export async function GET(req: Request) {
   // Security: only Vercel Cron or admin can trigger
   const isVercelCron = req.headers.get("x-vercel-cron") === "1"
   const authHeader = req.headers.get("authorization")
-  const isAdmin = authHeader === `Bearer ${process.env.CRON_SECRET || "dev_cron_secret"}`
+  const isAdmin = !!process.env.CRON_SECRET && authHeader === `Bearer ${process.env.CRON_SECRET}`
+  const token = getTokenFromRequest(req)
+  const isMember = token ? !!(await verifyToken(token)) : false
 
-  if (!isVercelCron && !isAdmin && process.env.NODE_ENV === "production") {
+  if (!isVercelCron && !isAdmin && !isMember && process.env.NODE_ENV === "production") {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 })
   }
 
@@ -82,7 +85,8 @@ export async function GET(req: Request) {
   const query = NEGATIVE_QUERIES[Math.floor(Math.random() * NEGATIVE_QUERIES.length)]
 
   const images = await fetchGoogleImages(query)
-  const results = { query, scanned: images.length, stored: 0, skipped: 0 }
+  const configured = !!process.env.GOOGLE_CSE_ID
+  const results = { query, configured, scanned: images.length, stored: 0, skipped: 0 }
 
   for (const image of images) {
     const { score, labels, method } = await classifyImage(image.title, query)

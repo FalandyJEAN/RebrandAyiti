@@ -22,113 +22,6 @@ interface Photo {
   subcategory?: string
 }
 
-const MOCK_PHOTOS: Photo[] = [
-  {
-    id: "1",
-    url: "/images/citadelle-sunrise.jpg",
-    title: "Citadelle Laferrière au lever du soleil",
-    location: "Milot, Nord",
-    author: "Marie Dupont",
-    likes: 342,
-    comments: 28,
-    timestamp: "Il y a 2 minutes",
-    tags: ["citadelle", "patrimoine", "unesco"],
-    category: "patrimoine",
-    subcategory: "citadelle",
-  },
-  {
-    id: "2",
-    url: "/images/jacmel-carnival.jpg",
-    title: "Masques colorés du Carnaval de Jacmel",
-    location: "Jacmel, Sud-Est",
-    author: "Jean Baptiste",
-    likes: 456,
-    comments: 67,
-    timestamp: "Il y a 15 minutes",
-    tags: ["carnaval", "jacmel", "masques"],
-    category: "culture",
-    subcategory: "carnaval",
-  },
-  {
-    id: "3",
-    url: "/images/labadee-beach.jpg",
-    title: "Plage paradisiaque de Labadee",
-    location: "Labadee, Nord",
-    author: "Sophie Morin",
-    likes: 289,
-    comments: 19,
-    timestamp: "Il y a 1 heure",
-    tags: ["plage", "labadee", "turquoise"],
-    category: "nature",
-    subcategory: "plages",
-  },
-  {
-    id: "4",
-    url: "/images/iron-market.jpg",
-    title: "Marché en Fer de Port-au-Prince",
-    location: "Port-au-Prince, Ouest",
-    author: "Pierre Louis",
-    likes: 198,
-    comments: 15,
-    timestamp: "Il y a 2 heures",
-    tags: ["marché", "architecture", "fer"],
-    category: "architecture",
-    subcategory: "coloniale",
-  },
-  {
-    id: "5",
-    url: "/images/haitian-art.jpg",
-    title: "Peinture naïve haïtienne",
-    location: "Pétion-Ville, Ouest",
-    author: "Claudette Jean",
-    likes: 234,
-    comments: 31,
-    timestamp: "Il y a 3 heures",
-    tags: ["peinture", "art-naïf", "couleurs"],
-    category: "art",
-    subcategory: "peinture",
-  },
-  {
-    id: "6",
-    url: "/images/haiti-culture.jpg",
-    title: "Griot ak banann boukannen",
-    location: "Cap-Haïtien, Nord",
-    author: "Michel Augustin",
-    likes: 167,
-    comments: 12,
-    timestamp: "Il y a 4 heures",
-    tags: ["griot", "cuisine", "tradisyon"],
-    category: "gastronomie",
-    subcategory: "plats-traditionnels",
-  },
-  {
-    id: "7",
-    url: "/images/tap-tap.jpg",
-    title: "Tap-tap coloré dans les rues",
-    location: "Port-au-Prince, Ouest",
-    author: "Roseline Pierre",
-    likes: 145,
-    comments: 8,
-    timestamp: "Il y a 5 heures",
-    tags: ["tap-tap", "couleurs", "art"],
-    category: "vie-quotidienne",
-    subcategory: "transport",
-  },
-  {
-    id: "8",
-    url: "/images/bassin-bleu.jpg",
-    title: "Bassin Bleu — Piscine naturelle",
-    location: "Jacmel, Sud-Est",
-    author: "David Moïse",
-    likes: 312,
-    comments: 24,
-    timestamp: "Il y a 6 heures",
-    tags: ["bassin-bleu", "nature", "turquoise"],
-    category: "nature",
-    subcategory: "rivières",
-  },
-]
-
 export default function LiveGallerySection() {
   const { token } = useAuth()
   const [photos, setPhotos] = useState<Photo[]>([])
@@ -142,12 +35,13 @@ export default function LiveGallerySection() {
       const apiPhotos = (data.photos || []).map((p: Photo & { likes_count?: number; created_at?: string }) => ({
         ...p,
         likes: p.likes_count ?? p.likes ?? 0,
+        author: (p as Photo & { author_name?: string }).author_name ?? p.author ?? "",
         timestamp: p.created_at ? new Date(p.created_at).toLocaleDateString("fr-FR") : "Récent",
         tags: p.tags || [],
       }))
-      setPhotos([...apiPhotos, ...MOCK_PHOTOS])
+      setPhotos(apiPhotos)
     } catch {
-      setPhotos(MOCK_PHOTOS)
+      setPhotos([])
     }
   }
 

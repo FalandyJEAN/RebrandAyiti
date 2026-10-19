@@ -5,13 +5,19 @@ import { signToken } from "@/lib/jwt"
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json()
+    const body = await req.json().catch(() => ({}))
+    const name = String(body.name ?? "").trim().slice(0, 80)
+    const email = String(body.email ?? "").trim().toLowerCase()
+    const password = String(body.password ?? "")
 
     if (!name || !email || !password) {
       return NextResponse.json({ error: "Tous les champs sont requis" }, { status: 400 })
     }
-    if (password.length < 6) {
-      return NextResponse.json({ error: "Le mot de passe doit contenir au moins 6 caractères" }, { status: 400 })
+    if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Email invalide" }, { status: 400 })
+    }
+    if (password.length < 8 || new TextEncoder().encode(password).length > 72) {
+      return NextResponse.json({ error: "Le mot de passe doit contenir entre 8 et 72 caractères" }, { status: 400 })
     }
 
     // Check if email already exists

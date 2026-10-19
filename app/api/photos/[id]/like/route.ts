@@ -6,6 +6,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   try {
     const { id } = await params
     const photoId = parseInt(id)
+    if (!Number.isInteger(photoId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 })
 
     const token = getTokenFromRequest(req)
     if (!token) return NextResponse.json({ error: "Non authentifié" }, { status: 401 })

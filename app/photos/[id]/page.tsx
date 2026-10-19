@@ -12,9 +12,9 @@ interface Props {
 async function getPhoto(id: string) {
   try {
     const result = await sql`
-      SELECT p.*, u.name as author_name
+      SELECT p.*, COALESCE(u.name, p.author_name) as author_name
       FROM photos p
-      LEFT JOIN users u ON p.user_id = u.id
+      LEFT JOIN users u ON p.author_id = u.id
       WHERE p.id = ${parseInt(id)}
     `
     return result[0] || null

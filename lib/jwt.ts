@@ -1,8 +1,10 @@
 import { SignJWT, jwtVerify } from "jose"
 
-const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET || "fallback_dev_secret_change_in_prod"
-)
+// En production, JWT_SECRET est obligatoire (OWASP-098) : aucun secret par défaut
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build") {
+  throw new Error("JWT_SECRET manquant")
+}
+const secret = new TextEncoder().encode(process.env.JWT_SECRET || "dev_only_local_secret")
 
 export interface TokenPayload {
   id: number

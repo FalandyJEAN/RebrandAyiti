@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { put } from "@vercel/blob"
+import { saveImage, UploadError } from "@/lib/storage"
 import { sql } from "@/lib/db"
 import { verifyToken, getTokenFromRequest } from "@/lib/jwt"
 
@@ -8,13 +8,13 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
     const category = searchParams.get("category")
-    const limit = parseInt(searchParams.get("limit") || "50")
-    const offset = parseInt(searchParams.get("offset") || "0")
+    const limit = Math.min(Math.max(parseInt(searchParams.get("limit") || "50") || 50, 1), 100)
+    const offset = Math.max(parseInt(searchParams.get("offset") || "0") || 0, 0)
 
     let photos
     if (category && category !== "all") {
       photos = await sql`
-        SELECT p.*, u.name as author_name
+        SELECT p.*, COALESCE(u.name, p.author_name) as author_name
         FROM photos p
         LEFT JOIN users u ON p.author_id = u.id
         WHERE p.category = ${category}
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
       `
     } else {
       photos = await sql`
-        SELECT p.*, u.name as author_name
+        SELECT p.*, COALESCE(u.name, p.author_name) as author_name
         FROM photos p
         LEFT JOIN users u ON p.author_id = u.id
         ORDER BY p.created_at DESC
@@ -52,34 +52,39 @@ export async function POST(req: Request) {
     }
 
     const formData = await req.formData()
-    const file = formData.get("file") as File
-    const title = formData.get("title") as string
-    const description = formData.get("description") as string || ""
-    const location = formData.get("location") as string
-    const category = formData.get("category") as string
-    const subcategory = formData.get("subcategory") as string || ""
-    const tagsRaw = formData.get("tags") as string || ""
+    const file = formData.get("file")
+    const text = (k: string, max: number) => String(formData.get(k) ?? "").trim().slice(0, max)
+    const title = text("title", 120)
+    const description = text("description", 1000)
+    const location = text("location", 120)
+    const category = text("category", 50)
+    const subcategory = text("subcategory", 50)
+    const tagsRaw = text("tags", 300)
 
-    if (!file || !title || !location || !category) {
+    if (!(file instanceof File) || !title || !location || !category) {
       return NextResponse.json({ error: "Champs requis manquants" }, { status: 400 })
     }
 
-    // Upload vers Vercel Blob
-    const ext = file.name.split(".").pop() || "jpg"
-    const filename = `photos/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-    const blob = await put(filename, file, { access: "public" })
+    let url: string
+    try {
+      url = await saveImage(file)
+    } catch (e) {
+      if (e instanceof UploadError) return NextResponse.json({ error: e.message }, { status: 400 })
+      throw e
+    }
 
     const tags = tagsRaw
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean)
+      .slice(0, 10)
 
     // Sauvegarde en DB
     const result = await sql`
       INSERT INTO photos (title, description, location, category, subcategory, tags, url, author_id, author_name)
       VALUES (
         ${title}, ${description}, ${location}, ${category}, ${subcategory},
-        ${tags}, ${blob.url}, ${user.id}, ${user.name}
+        ${tags}, ${url}, ${user.id}, ${user.name}
       )
       RETURNING *
     `

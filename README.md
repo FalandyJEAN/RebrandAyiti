@@ -122,6 +122,16 @@ Nou akeyi kontribitè nouvo ak eksperimante. Ou ka ede pa:
 
 ---
 
+## 🚀 Lanse pwototip la lokalman
+
+```bash
+npm install --legacy-peer-deps
+npm run dev        # http://localhost:3000
+```
+
+Pa bezwen okenn konfigirasyon : baz done a (PGlite) ak foto yo estoke nan `.data/`.
+Pou pwodiksyon, gade `.env.example` (`JWT_SECRET` obligatwa, `DATABASE_URL` Neon, `BLOB_READ_WRITE_TOKEN`).
+
 ## ✨ RebrandAyiti
 
 **"Nou pap efase reyalite — men n ap mete limyè sou bèlte nou yo."**

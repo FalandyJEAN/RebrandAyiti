@@ -107,17 +107,50 @@ export default function ReportPage() {
     setCrawlerResult(null)
     try {
       const res = await fetch("/api/crawler", {
-        headers: { Authorization: `Bearer dev_cron_secret` },
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
+      if (res.status === 401) { openAuthModal(); return }
       const data = await res.json()
       setCrawlerResult(
-        `Scan fini: ${data.scanned} imaj eskane, ${data.stored} nouvo imaj negatif jwenn (rechèch: "${data.query}")`
+        data.configured === false
+          ? "Scan otomatik la pa konfigire (GOOGLE_CSE_ID). Ou ka toujou soumèt yon imaj anba a."
+          : `Scan fini: ${data.scanned} imaj eskane, ${data.stored} nouvo imaj negatif jwenn (rechèch: "${data.query}")`
       )
       await loadData()
     } catch {
       setCrawlerResult("Erè pandan scan la. Verifye kle API nan .env.local")
     } finally {
       setIsRunningCrawler(false)
+    }
+  }
+
+  const [submitUrl, setSubmitUrl] = useState("")
+  const [submitQuery, setSubmitQuery] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [submitMsg, setSubmitMsg] = useState<string | null>(null)
+
+  const submitImage = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!token) { openAuthModal(); return }
+    setSubmitting(true)
+    setSubmitMsg(null)
+    try {
+      const res = await fetch("/api/crawler/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ image_url: submitUrl, search_query: submitQuery }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setSubmitMsg("Mèsi! Imaj la ajoute nan lis la.")
+        setSubmitUrl("")
+        setSubmitQuery("")
+        await loadData()
+      } else {
+        setSubmitMsg(data.error || "Erè")
+      }
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -426,6 +459,37 @@ export default function ReportPage() {
             ))}
           </div>
         )}
+
+        {/* Soumisyon manyèl */}
+        <form
+          onSubmit={submitImage}
+          className="border border-gray-200 dark:border-gray-800 p-5 md:p-8 mb-8 grid gap-3 md:grid-cols-[2fr_1fr_auto] items-end"
+        >
+          <div className="md:col-span-3">
+            <p className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 dark:text-gray-600 mb-1">
+              Ou jwenn yon imaj negatif?
+            </p>
+            <p className="text-xl font-black text-gray-900 dark:text-white">Soumèt li pou kominote a siyale l.</p>
+          </div>
+          <label className="text-sm text-gray-700 dark:text-gray-300">
+            Lyen imaj la (URL)
+            <input
+              type="url" required value={submitUrl} onChange={(e) => setSubmitUrl(e.target.value)}
+              placeholder="https://..." className="mt-1 w-full border border-gray-300 dark:border-gray-700 bg-transparent px-3 py-2"
+            />
+          </label>
+          <label className="text-sm text-gray-700 dark:text-gray-300">
+            Rechèch Google
+            <input
+              value={submitQuery} onChange={(e) => setSubmitQuery(e.target.value)}
+              placeholder="Haiti poverty" className="mt-1 w-full border border-gray-300 dark:border-gray-700 bg-transparent px-3 py-2"
+            />
+          </label>
+          <button type="submit" disabled={submitting} className="btn-haiti px-6 py-2.5 font-bold text-sm disabled:opacity-60">
+            {submitting ? "Ap voye..." : "Soumèt"}
+          </button>
+          {submitMsg && <p role="status" className="md:col-span-3 text-sm text-gray-600 dark:text-gray-400">{submitMsg}</p>}
+        </form>
 
         {/* CTA */}
         <div className="border border-gray-200 dark:border-gray-800 p-5 md:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">

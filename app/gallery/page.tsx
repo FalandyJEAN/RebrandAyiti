@@ -38,6 +38,7 @@ export default function GalleryPage() {
       const apiPhotos = (data.photos || []).map((p: Photo) => ({
         ...p,
         likes: p.likes_count ?? p.likes ?? 0,
+        author: (p as Photo & { author_name?: string }).author_name ?? p.author ?? "",
         timestamp: p.created_at ? new Date(p.created_at).toLocaleDateString("fr-FR") : "Récent",
         tags: p.tags || [],
         description: p.description || "",

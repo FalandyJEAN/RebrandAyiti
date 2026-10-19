@@ -6,8 +6,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   try {
     const { id } = await params
     const imageId = parseInt(id)
+    if (!Number.isInteger(imageId)) return NextResponse.json({ error: "ID invalide" }, { status: 400 })
 
-    const { reason } = await req.json().catch(() => ({ reason: "Stéréotype négatif" }))
+    const body = await req.json().catch(() => ({}))
+    const reason = String(body.reason || "Stéréotype négatif").slice(0, 200)
 
     // Auth optional — anonymous reports allowed but tracked
     const token = getTokenFromRequest(req)
@@ -23,6 +25,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         return NextResponse.json({ error: "Vous avez déjà signalé cette image" }, { status: 409 })
       }
     }
+
+    const found = await sql`SELECT 1 FROM negative_images WHERE id = ${imageId}`
+    if (found.length === 0) return NextResponse.json({ error: "Image introuvable" }, { status: 404 })
 
     // Record the report
     await sql`
