@@ -2,8 +2,8 @@ import { type MetadataRoute } from "next"
 import { sql } from "@/lib/db"
 import { SITE_URL as baseUrl, absoluteUrl } from "@/lib/site"
 
-// Régénéré toutes les heures : les nouvelles photos du catalogue y entrent sans redéploiement
-export const revalidate = 3600
+// Généré à chaque demande : les nouvelles photos du catalogue y entrent sans redéploiement
+export const dynamic = "force-dynamic"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
